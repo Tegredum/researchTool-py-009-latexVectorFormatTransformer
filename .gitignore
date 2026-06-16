@@ -3,3 +3,8 @@ dist
 node_modules
 .vscode-test/
 *.vsix
+
+# 忽略 test 目录下的测试 LaTeX 工程
+src/test/testLatexProject/*
+# 保留 testFile.tex 文件
+!src/test/testLatexProject/testFile.tex

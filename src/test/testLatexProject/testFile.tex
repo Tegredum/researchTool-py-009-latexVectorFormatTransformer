@@ -1,0 +1,86 @@
+\documentclass{article}
+\usepackage{amsmath}
+\usepackage{bm}  % 替换目标宏包
+\usepackage{silence}
+\WarningFilter{latexfont}{Font shape}		% 屏蔽所有以 "Font shape" 开头的 LaTeX 字体警告
+\WarningFilter{latexfont}{Some font shapes}	% 屏蔽所有以 "Some font shapes" 开头的 LaTeX 字体警告
+
+\title{Test Document for \texttt{\textbackslash bf} to \texttt{\textbackslash bm} Conversion}
+\author{Test Author}
+
+\begin{document}
+
+\maketitle
+
+\section{Basic Usage Patterns}
+
+% 场景1：标准的 LaTeX 2.09 样式（应被替换）
+This is a {\bf bold text} in the middle of a sentence.
+
+% 场景2：数学模式中的向量（应被替换为\bm）
+Let ${\bf x}$ be a vector and ${\bf y}$ be another vector.
+The sum ${\bf x} + {\bf y} = {\bf z}$.
+
+% 场景3：带空格的变化形式
+Here is {\bf another} example and {\bf  yet another  } with extra spaces.
+
+\section{Edge Cases and Traps}
+
+% 场景4：注释中的 \bf（应忽略，或根据你的需求决定）
+% This is a comment with {\bf bold} text inside.
+
+% 场景5：Verbatim 环境（绝对不应替换）
+\begin{verbatim}
+	{\bf This is verbatim text}
+	\bf should remain as is
+\end{verbatim}
+
+% 场景6：行内代码（不应替换）
+Use the command \verb|{\bf text}| to make bold text.
+
+% 场景7：类似但不同的命令（不应被替换）
+This uses modern \textbf{bold} and \textbf{another} approach.
+Also available: {\bfseries bold series} and \textbf{with braces}.
+
+\section{Complex Mathematical Expressions}
+
+% 场景8：矩阵和向量（应替换）
+$$
+{\bf A} = \begin{pmatrix}
+	{\bf a}_{11} & {\bf a}_{12} \\
+	{\bf a}_{21} & {\bf a}_{22}
+\end{pmatrix}
+$$
+
+% 场景9：下标中的使用（应替换）
+The vector ${\bf x}_i$ has components $x_{{\bf i}j}$.
+
+% 场景10：多重嵌套（需谨慎处理）
+${\bf \hat{x}}$ and ${\bf \tilde{y}}$ with accents.
+
+\section{Commands and Definitions}
+
+% 场景11：宏定义中的使用（应替换）
+\newcommand{\myvec}{{\bf v}}
+\newcommand{\mybold}[1]{{\bf #1}}
+
+% 场景12：段落开始
+{\bf This paragraph starts with bold.} And continues normally.
+
+% 场景13：表格中的使用
+\begin{tabular}{ll}
+	\hline
+	{\bf Column 1} & {\bf Column 2} \\
+	\hline
+	{\bf Item} & Value \\
+	\hline
+\end{tabular}
+
+% 多行匹配测试
+Here is a very long line that contains {\bf bold text 
+spanning multiple lines} which is tricky to handle.
+
+% 转义字符测试
+The sequence \textbackslash{\bf is not a command} but looks like one.
+
+\end{document}
