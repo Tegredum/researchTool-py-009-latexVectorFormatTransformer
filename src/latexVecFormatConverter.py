@@ -1,8 +1,10 @@
 # encoding: utf-8
-# author: kimi-k2-thinking, Tegredum
+# author: kimi-k2-thinking, Tegredum, TRAE Work CN
 # python version: 3.10.16
 
 import re
+import sys
+import argparse
 
 def replace_latex_delimiters_and_commands(text: str) -> str:
 	# 处理 LaTeX 格式的字符串：
@@ -42,8 +44,27 @@ def replace_latex_delimiters_and_commands(text: str) -> str:
 	return result
 
 
-# ==================== 测试用例 ====================
-if __name__ == "__main__":
+def main():
+	parser = argparse.ArgumentParser(description='LaTeX 向量格式转换器：将 \\[...\\] 转换为 $$...$$，并将 \\bf 替换为 \\bm')
+	parser.add_argument('--input', '-i', type=str, help='输入文件路径')
+	parser.add_argument('--output', '-o', type=str, help='输出文件路径')
+	args = parser.parse_args()
+	
+	if args.input:
+		with open(args.input, 'r', encoding='utf-8') as f:
+			text = f.read()
+	else:
+		text = sys.stdin.read()
+	
+	result = replace_latex_delimiters_and_commands(text)
+	
+	if args.output:
+		with open(args.output, 'w', encoding='utf-8') as f:
+			f.write(result)
+	else:
+		sys.stdout.write(result)
+
+def run_tests():
 	# 测试 1: 简单情况
 	test1 = r"这是一个 \[ \bf{重要公式} \] 示例"
 	print("测试 1:")
@@ -90,3 +111,6 @@ d = e + f
 	print(f"输入: {test6}")
 	print(f"输出: {replace_latex_delimiters_and_commands(test6)}")
 	print()
+
+if __name__ == "__main__":
+	main()

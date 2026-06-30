@@ -1,26 +1,63 @@
-// The module 'vscode' contains the VS Code extensibility API
-// Import the module and reference it with the alias vscode in your code below
 import * as vscode from 'vscode';
+import { PythonRunner } from './pythonRunner';
 
-// This method is called when your extension is activated
-// Your extension is activated the very first time the command is executed
 export function activate(context: vscode.ExtensionContext) {
+	const runner = new PythonRunner(context);
 
-	// Use the console to output diagnostic information (console.log) and errors (console.error)
-	// This line of code will only be executed once when your extension is activated
-	console.log('Congratulations, your extension "latexVectorFormatTransformer" is now active!');
+	const convertDocument = vscode.commands.registerCommand('latexVectorFormatTransformer.convertDocument', async () => {
+		const editor = vscode.window.activeTextEditor;
+		if (!editor) {
+			vscode.window.showErrorMessage('没有活动的编辑器');
+			return;
+		}
 
-	// The command has been defined in the package.json file
-	// Now provide the implementation of the command with registerCommand
-	// The commandId parameter must match the command field in package.json
-	const disposable = vscode.commands.registerCommand('latexVectorFormatTransformer.helloWorld', () => {
-		// The code you place here will be executed every time your command is executed
-		// Display a message box to the user
-		vscode.window.showInformationMessage('Hello World from 009 LaTeX 矢量格式转换!');
+		const document = editor.document;
+		const selection = editor.selection;
+		const hasSelection = !selection.isEmpty;
+		const textToConvert = hasSelection ? document.getText(selection) : document.getText();
+
+		try {
+			const converted = await runner.convertText(textToConvert);
+			const range = hasSelection ? selection : new vscode.Range(
+				document.positionAt(0),
+				document.positionAt(textToConvert.length)
+			);
+			await editor.edit(editBuilder => {
+				editBuilder.replace(range, converted);
+			});
+			vscode.window.showInformationMessage(hasSelection ? '已转换选中内容' : '已转换整个文档');
+		} catch (error) {
+			const errorMessage = error instanceof Error ? error.message : String(error);
+			vscode.window.showErrorMessage(`转换失败: ${errorMessage}`);
+		}
 	});
 
-	context.subscriptions.push(disposable);
+	const convertAndPaste = vscode.commands.registerCommand('latexVectorFormatTransformer.convertAndPaste', async () => {
+		const editor = vscode.window.activeTextEditor;
+		if (!editor) {
+			vscode.window.showErrorMessage('没有活动的编辑器');
+			return;
+		}
+
+		try {
+			const clipboardText = await vscode.env.clipboard.readText();
+			if (!clipboardText) {
+				vscode.window.showWarningMessage('剪贴板为空');
+				return;
+			}
+			const converted = await runner.convertText(clipboardText);
+			const position = editor.selection.active;
+			await editor.edit(editBuilder => {
+				editBuilder.insert(position, converted);
+			});
+			vscode.window.showInformationMessage('已转换并粘贴');
+		} catch (error) {
+			const errorMessage = error instanceof Error ? error.message : String(error);
+			vscode.window.showErrorMessage(`转换失败: ${errorMessage}`);
+		}
+	});
+
+	context.subscriptions.push(convertDocument, convertAndPaste);
 }
 
-// This method is called when your extension is deactivated
 export function deactivate() {}

@@ -14,10 +14,42 @@
   "contributes": {
     "commands": [
       {
-        "command": "latexVectorFormatTransformer.helloWorld",
-        "title": "Hello World"
+        "command": "latexVectorFormatTransformer.convertDocument",
+        "title": "转换 LaTeX 公式格式（当前文档）",
+        "category": "LaTeX 格式转换"
+      },
+      {
+        "command": "latexVectorFormatTransformer.convertAndPaste",
+        "title": "转换并粘贴 LaTeX 公式（从剪贴板）",
+        "category": "LaTeX 格式转换"
       }
-    ]
+    ],
+    "configuration": {
+      "title": "LaTeX 矢量格式转换",
+      "properties": {
+        "latexVectorFormatTransformer.pythonMode": {
+          "type": "string",
+          "default": "auto",
+          "enum": ["auto", "direct", "conda"],
+          "description": "Python 运行模式"
+        },
+        "latexVectorFormatTransformer.pythonPath": {
+          "type": "string",
+          "default": "python",
+          "description": "Python 解释器路径（直接模式）"
+        },
+        "latexVectorFormatTransformer.condaPath": {
+          "type": "string",
+          "default": "conda",
+          "description": "conda 可执行文件路径（conda 模式）"
+        },
+        "latexVectorFormatTransformer.condaEnv": {
+          "type": "string",
+          "default": "",
+          "description": "conda 环境名称，留空则用 base"
+        }
+      }
+    }
   },
   "scripts": {
     "vscode:prepublish": "npm run compile",
